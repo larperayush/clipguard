@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clipguard"
+version = "0.1.0"
+authors = [
+    { name = "Developer", email = "developer@example.com" }
+]
+description = "A privacy-first smart clipboard manager that intercepts and protects sensitive credentials, tokens, and keys in real-time."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Security",
+    "Topic :: Utilities",
+    "Environment :: Console"
+]
+dependencies = [
+    "rich>=13.0.0",
+    "pyperclip>=1.8.2",
+    "click>=8.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]
+
+[project.scripts]
+clipguard = "clipguard.cli:main"
