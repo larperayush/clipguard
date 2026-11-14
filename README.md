@@ -53,7 +53,7 @@ From there, it gets leaked in:
 Clone and install locally:
 
 ```bash
-git clone https://github.com/<your-username>/clipguard.git
+git clone https://github.com/ayushpandey67/clipguard.git
 cd clipguard
 pip install -e .
 ```

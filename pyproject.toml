@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "clipguard"
 version = "0.1.0"
 authors = [
-    { name = "Developer", email = "developer@example.com" }
+    { name = "Ayush Pandey" }
 ]
 description = "A privacy-first smart clipboard manager that intercepts and protects sensitive credentials, tokens, and keys in real-time."
 readme = "README.md"
