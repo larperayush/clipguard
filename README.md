@@ -82,6 +82,11 @@ Keep ClipGuard running in a terminal pane or background service:
 clipguard watch
 ```
 
+To allow a 30-second grace window to paste your key before auto-wiping (Ephemeral Clipboard):
+```bash
+clipguard watch -t 30
+```
+
 To automatically wipe the clipboard the instant a secret is copied:
 ```bash
 clipguard watch --auto-purge
@@ -150,6 +155,11 @@ clipguard pin 3 --label "Docker Dev Setup"
 Copy any historical item back to your clipboard by its ID:
 ```bash
 clipguard copy 3
+```
+
+Or copy with a temporary TTL window (e.g., auto-wipe after 30 seconds):
+```bash
+clipguard copy 3 --ttl 30
 ```
 
 ---

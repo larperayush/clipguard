@@ -27,7 +27,8 @@ def main():
 @click.option("--auto-purge", is_flag=True, help="Automatically wipe clipboard when a secret is detected.")
 @click.option("--store-redacted", is_flag=True, help="Store redacted content in history rather than raw secrets.")
 @click.option("--interval", default=0.5, type=float, help="Clipboard polling interval in seconds.")
-def watch(auto_purge: bool, store_redacted: bool, interval: float):
+@click.option("-t", "--timeout", default=0, type=int, help="Auto-wipe secrets after N seconds (e.g. 30s grace window).")
+def watch(auto_purge: bool, store_redacted: bool, interval: float, timeout: int):
     """Start the live clipboard watcher and secret detection daemon."""
     storage = StorageManager()
     watcher = ClipboardWatcher(
@@ -35,6 +36,7 @@ def watch(auto_purge: bool, store_redacted: bool, interval: float):
         auto_purge=auto_purge,
         store_redacted=store_redacted,
         poll_interval=interval,
+        timeout=timeout,
     )
     watcher.start()
 
@@ -109,7 +111,8 @@ def search(query: str, limit: int):
 
 @main.command()
 @click.argument("item_id", type=int)
-def copy(item_id: int):
+@click.option("--ttl", default=0, type=int, help="Keep in clipboard for N seconds, then auto-wipe.")
+def copy(item_id: int, ttl: int):
     """Copy an item from history back into your active clipboard."""
     storage = StorageManager()
     item = storage.get_item(item_id)
@@ -118,7 +121,20 @@ def copy(item_id: int):
         return
 
     pyperclip.copy(item.content)
-    console.print(f"[green]✓ Copied item #{item_id} to clipboard.[/green]")
+    if ttl > 0:
+        import threading
+        import time
+
+        def _expire():
+            time.sleep(ttl)
+            if pyperclip.paste() == item.content:
+                pyperclip.copy("")
+                console.print(f"\n[bold green]🔒 TTL Expired ({ttl}s): Clipboard wiped.[/bold green]")
+
+        threading.Thread(target=_expire, daemon=True).start()
+        console.print(f"[green]✓ Copied item #{item_id} to clipboard.[/green] [yellow](Will auto-wipe in {ttl}s)[/yellow]")
+    else:
+        console.print(f"[green]✓ Copied item #{item_id} to clipboard.[/green]")
 
 
 @main.command()
